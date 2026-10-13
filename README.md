@@ -1,5 +1,9 @@
 # Projeto Algoritmos em C
 
+**Autores:**
+- José Henrique Rampazzo Martins - RGM: 40478343
+- Pedro Macedo de Sousa - RGM: 40571327
+
 Este repositório contém implementações de projetos práticos de algoritmos em linguagem C, com foco em análise de complexidade e testes de desempenho.
 
 ## Projeto 01: Auditoria Experimental da Busca Sequencial
@@ -7,7 +11,7 @@ Este repositório contém implementações de projetos práticos de algoritmos e
 **Objetivo:** Comprovar experimentalmente as três métricas clássicas de complexidade da busca sequencial em vetores não ordenados.
 
 ### Conceitos e Metodologia (Por que fizemos assim?)
-**Por que uma "Auditoria Experimental"?** 
+**Por que uma "Auditoria Experimental"?**
 Normalmente, a análise de complexidade de algoritmos (Notação Big-O) é ensinada de forma puramente teórica e matemática. O objetivo de estruturar o código em formato de "auditoria" com testes de estresse é fazer a ponte entre a teoria e o hardware. Em vez de apenas aceitar que o caso médio é $\Theta(n)$, nós instruímos o computador a rodar milhares de simulações e contar as comparações reais para provar que elas convergem para a fórmula matemática $\frac{n + 1}{2}$.
 
 **Conceitos de Complexidade Aplicados:**
