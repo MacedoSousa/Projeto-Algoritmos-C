@@ -3,7 +3,7 @@
 #include <time.h>
 #include <assert.h>
 
-// Função de Busca Sequencial que conta as comparações
+// Função de Busca Sequencial normal (rápida para milhões de dados)
 int busca_sequencial(int *vet, int n, int chave, long long *comparacoes) {
     for (int i = 0; i < n; i++) {
         (*comparacoes)++;
@@ -14,11 +14,54 @@ int busca_sequencial(int *vet, int n, int chave, long long *comparacoes) {
     return -1; // Não encontrou
 }
 
+// Função de Busca Sequencial Verbosa (Demonstração visual)
+int busca_sequencial_verbosa(int *vet, int n, int chave, long long *comparacoes) {
+    printf("\n--- Iniciando Busca Passo a Passo (Procurando: %d) ---\n", chave);
+    for (int i = 0; i < n; i++) {
+        (*comparacoes)++;
+        printf(" [Passo %lld] Analisando indice [%d] -> Valor atual: %d", *comparacoes, i, vet[i]);
+        if (vet[i] == chave) {
+            printf(" (ENCONTRADO!)\n");
+            return i;
+        } else {
+            printf(" (Diferente)\n");
+        }
+    }
+    printf(" -> Fim da busca: Elemento %d NAO ENCONTRADO.\n", chave);
+    return -1;
+}
+
+// ==========================================
+// DEMONSTRAÇÃO VISUAL PASSO A PASSO
+// ==========================================
+void demonstrar_passo_a_passo() {
+    printf("======================================\n");
+    printf(" DEMONSTRACAO PASSO A PASSO\n");
+    printf("======================================\n");
+    int vet[] = {15, 22, 8, 40, 57, 91, 12};
+    int n = 7;
+    long long comp = 0;
+
+    printf("Vetor: [");
+    for(int i = 0; i < n; i++) {
+        printf("%d%s", vet[i], i < n - 1 ? ", " : "]\n");
+    }
+
+    // Busca de um elemento que existe
+    busca_sequencial_verbosa(vet, n, 40, &comp);
+
+    comp = 0;
+    // Busca de um elemento inexistente (Pior caso)
+    busca_sequencial_verbosa(vet, n, 99, &comp);
+    printf("\n");
+}
+
 // ==========================================
 // TESTES UNITÁRIOS
 // ==========================================
 void testar_busca_sequencial() {
-    printf("[...] Iniciando Testes Unitarios...\n");
+    printf("======================================\n");
+    printf("[...] Iniciando Testes Unitarios silenciados...\n");
     int vet[] = {10, 20, 30, 40, 50};
     int n = 5;
     long long comp;
@@ -59,13 +102,13 @@ void testar_estresse_carga() {
     printf("======================================\n");
     printf(" TESTE DE CARGA E ESTRESSE (n = %d)\n", n);
     printf("======================================\n");
-    
+
     int *vet = (int*) malloc(n * sizeof(int));
     if (vet == NULL) {
         printf("Erro de alocacao de memoria.\n");
         return;
     }
-    
+
     // Preenche vetor
     for (int i = 0; i < n; i++) {
         vet[i] = i;
@@ -75,13 +118,12 @@ void testar_estresse_carga() {
     long long comp_totais = 0;
     long long comp = 0;
 
-    printf("Executando %d buscas aleatorias...\n", num_buscas);
+    printf("Executando %d buscas aleatorias silenciosas...\n", num_buscas);
 
     clock_t inicio = clock();
 
     for(int k = 0; k < num_buscas; k++) {
         comp = 0;
-        // Alterna entre buscas de itens que existem e itens no pior caso (-1)
         int chave = (rand() % 2 == 0) ? (rand() % n) : -1;
         busca_sequencial(vet, n, chave, &comp);
         comp_totais += comp;
@@ -102,11 +144,11 @@ void testar_estresse_carga() {
 // ==========================================
 void executar_experimento(int n) {
     int *vet = (int*) malloc(n * sizeof(int));
-    
+
     for (int i = 0; i < n; i++) {
         vet[i] = i;
     }
-    
+
     for (int i = n - 1; i > 0; i--) {
         int j = rand() % (i + 1);
         int temp = vet[i];
@@ -117,7 +159,7 @@ void executar_experimento(int n) {
     printf("======================================\n");
     printf(" Experimentos para n = %d\n", n);
     printf("======================================\n");
-    
+
     long long comp;
 
     comp = 0;
@@ -130,17 +172,17 @@ void executar_experimento(int n) {
 
     long long total_comp_medio = 0;
     int num_buscas = 1000;
-    
+
     for(int k = 0; k < num_buscas; k++) {
         comp = 0;
         int indice_sorteado = rand() % n;
         busca_sequencial(vet, n, vet[indice_sorteado], &comp);
         total_comp_medio += comp;
     }
-    
+
     double media = (double)total_comp_medio / num_buscas;
     double teoria = (n + 1) / 2.0;
-    
+
     printf("Caso Medio (Media de %d buscas):\n - Comparacoes reais (media): %.1f\n - Convergencia Teorica: %.1f\n\n", num_buscas, media, teoria);
 
     free(vet);
@@ -148,18 +190,21 @@ void executar_experimento(int n) {
 
 int main() {
     srand(time(NULL));
-    
+
+    // 0. Demonstração Visual Passo a Passo
+    demonstrar_passo_a_passo();
+
     // 1. Testes Unitários
     testar_busca_sequencial();
 
     // 2. Teste de Carga e Estresse
     testar_estresse_carga();
-    
+
     // 3. Experimentos Base (Melhor, Pior, Medio)
     int tamanhos[] = {100, 1000, 10000};
     for (int i = 0; i < 3; i++) {
         executar_experimento(tamanhos[i]);
     }
-    
+
     return 0;
 }
